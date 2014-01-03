@@ -56,8 +56,12 @@ public class Indexer {
 		File[] files = new File(dataDir).listFiles();
 
 		for (File f : files) {
-			if (!f.isDirectory() && !f.isHidden() && f.exists() && f.canRead()
-					&& (filter == null || filter.accept(f))) {
+			if (!f.exists() || f.isHidden() || !f.canRead() ) // 不符合条件
+				continue;
+			
+			if (f.isDirectory() ) {                         // f 是文件夹
+				index(f.getAbsolutePath(), filter);         // 递归调用
+			} else if (filter != null || filter.accept(f)){ // f是符合条件的文件
 				indexFile(f);
 			}
 		}
