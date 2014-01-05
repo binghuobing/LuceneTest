@@ -54,9 +54,9 @@ public class TikaIndexer {
 				String fullpath = f.getCanonicalPath();
 				Tika tika = new Tika();
 				tika.setMaxStringLength(-1);
-				doc.add(new TextField("contents", tika.parse(f)));
-				doc.add(new TextField("filename", filename, Field.Store.YES));
-				doc.add(new TextField("fullpath", fullpath, Field.Store.YES));
+				doc.add(new TextField(Constants.FieldContent, tika.parse(f)));
+				doc.add(new TextField(Constants.FieldFilename, filename, Field.Store.YES));
+				doc.add(new TextField(Constants.FieldFullpath, fullpath, Field.Store.YES));
 				writer.addDocument(doc);
 				
 				if (debug)

@@ -9,7 +9,7 @@ public class TestSearcher {
 	public void test() {
 		String q = "Íô·å";
 		try {
-			Searcher.search(Constants.indexDir, q);
+			//Searcher.search(Constants.indexDir, q);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
