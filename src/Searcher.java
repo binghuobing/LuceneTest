@@ -22,7 +22,7 @@ public class Searcher {
 		
 		IndexSearcher is = new IndexSearcher(DirectoryReader.open(dir));
 		long start = System.currentTimeMillis();
-		TopDocs hits = is.search(query, 50);
+		TopDocs hits = is.search(query, 20);
 		long end = System.currentTimeMillis();
 		
 		System.err.println("Found " + hits.totalHits + 

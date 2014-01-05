@@ -10,7 +10,8 @@ public class TestIndexer {
 		String indexDir = Constants.indexDir;
 		String dataDir = Constants.dataDir;
 
-		Indexer indexer = new Indexer(dataDir, indexDir);
+		//Indexer indexer = new Indexer(dataDir, indexDir);
+		TikaIndexer indexer = new TikaIndexer(dataDir, indexDir);
 		indexer.run();
 	}
 }

@@ -7,12 +7,11 @@ public class TestSearcher {
 
 	@Test
 	public void test() {
-		String q = "¹ÊÔ»¡°ÕçÊ¿Òþ¡±ÔÆÔÆ";
+		String q = "Íô·å";
 		try {
 			Searcher.search(Constants.indexDir, q);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
 }

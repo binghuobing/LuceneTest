@@ -4,6 +4,7 @@ import java.lang.*;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
+import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.store.*;
 import org.apache.lucene.util.Version;
 
@@ -12,7 +13,25 @@ public class Indexer {
 	private IndexWriter writer;
 	String indexDir ;
 	String dataDir ;
-
+	
+	public Indexer(String dataDir, String indexDir) throws IOException {
+		this.indexDir = indexDir;
+		this.dataDir = dataDir;
+		try {
+			Directory dir = FSDirectory.open(new File(indexDir));
+			IndexWriterConfig conf = new IndexWriterConfig(Version.LUCENE_46,
+					new StandardAnalyzer(Version.LUCENE_46));
+			//writer.deleteAll();
+			conf.setOpenMode(OpenMode.CREATE_OR_APPEND);   
+	        //conf.setIndexDeletionPolicy(commitDeletionPolicy);   
+			writer = new IndexWriter(dir, conf); // 3
+			writer.deleteAll();  
+			//writer.commit();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void run()  {
 		long start = System.currentTimeMillis();
 		int numIndexed = 0;
@@ -28,19 +47,6 @@ public class Indexer {
 
 		System.out.println("Indexing " + numIndexed + " files took "
 				+ (end - start) + " milliseconds");
-	}
-
-	public Indexer(String dataDir, String indexDir) throws IOException {
-		this.indexDir = indexDir;
-		this.dataDir = dataDir;
-		try {
-			Directory dir = FSDirectory.open(new File(indexDir));
-			IndexWriterConfig conf = new IndexWriterConfig(Version.LUCENE_46,
-					new StandardAnalyzer(Version.LUCENE_46));
-			writer = new IndexWriter(dir, conf); // 3
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public void close() {
@@ -61,17 +67,18 @@ public class Indexer {
 			
 			if (f.isDirectory() ) {                         // f 是文件夹
 				index(f.getAbsolutePath(), filter);         // 递归调用
-			} else if (filter != null || filter.accept(f)){ // f是符合条件的文件
+			} else if (filter == null || filter.accept(f)){ // f是符合条件的文件
 				indexFile(f);
 			}
 		}
 		return writer.numDocs(); // 5
 	}
 
-	private static class TextFilesFilter implements FileFilter {
+	private class TextFilesFilter implements FileFilter {
 		public boolean accept(File path) {
-			return path.getName().toLowerCase() // 6
-					.endsWith(".txt"); // 6
+			String name = path.getName().toLowerCase();
+			boolean isAccepted = name.endsWith(".txt");
+			return isAccepted; // 6
 		}
 	}
 
